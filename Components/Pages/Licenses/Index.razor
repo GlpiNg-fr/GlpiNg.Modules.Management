@@ -1,0 +1,136 @@
+@page "/management/licenses"
+@rendermode InteractiveServer
+
+<PageTitle>Licences — GlpiNg</PageTitle>
+
+<div class="glpi-list-page">
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between glpi-list-toolbar">
+        <div class="btn-list">
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="ti ti-search me-1"></i>Rechercher
+                </button>
+                <div class="dropdown-menu p-3" style="min-width: 280px;">
+                    <div class="input-icon">
+                        <span class="input-icon-addon"><i class="ti ti-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Rechercher..."
+                               @bind="_searchTerm" @bind:event="oninput" @onkeyup="OnSearchChanged" />
+                    </div>
+                </div>
+            </div>
+
+            <label class="form-check form-switch align-self-center mb-0 ms-2">
+                <input class="form-check-input" type="checkbox" checked="@_expiringOnly"
+                       @onchange="@((ChangeEventArgs e) => OnExpiringOnlyChanged((bool)(e.Value ?? false)))" />
+                @* Une échéance manquée ne se voit qu'en production, jamais dans une liste triée par nom. *@
+                <span class="form-check-label">Expire bientôt ou déjà expiré</span>
+            </label>
+        </div>
+
+        <div class="btn-list align-items-center">
+            <div class="dropdown">
+                <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
+                        disabled="@(_selectedIds.Count == 0)" title="Supprimer la sélection">
+                    <i class="ti ti-trash"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
+                    <p class="mb-2">Supprimer @_selectedIds.Count élément(s) ? Cette action est définitive.</p>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm">Annuler</button>
+                        <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteSelectedAsync">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-icon" @onclick="LoadAsync" title="Rafraîchir">
+                <i class="ti ti-refresh"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newSoftwareLicenseModal">
+                <i class="ti ti-plus me-1"></i>Ajouter
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th style="width: 2.5rem;">
+                        <input class="form-check-input m-0" type="checkbox" title="Sélectionner les éléments visibles"
+                               checked="@AllSelected"
+                               @onchange="@((ChangeEventArgs e) => ToggleSelectAll((bool)(e.Value ?? false)))" />
+                    </th>
+                    <th>Nom</th>
+                    <th>Logiciel</th>
+                    <th>Type</th>
+                    <th>Postes</th>
+                    <th>Fournisseur</th>
+                    <th>Expiration</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (_filtered.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-center text-secondary py-4">Aucun élément.</td></tr>
+                }
+                else
+                {
+                    @foreach (SoftwareLicense item in _filtered)
+                    {
+                        <tr>
+                            <td>
+                                <input class="form-check-input m-0" type="checkbox" checked="@_selectedIds.Contains(item.Id)"
+                                       @onchange="@((ChangeEventArgs e) => ToggleSelect(item.Id, (bool)(e.Value ?? false)))" />
+                            </td>
+                                <td>
+                                    <a href="@($"/management/licenses/{item.Id}")" class="text-reset fw-semibold">
+                                        <i class="ti ti-license me-1 text-secondary"></i>@item.Name
+                                    </a>
+                                </td>
+                                <td class="text-secondary">@item.SoftwareName</td>
+                                <td class="text-secondary">@item.Type</td>
+                                <td class="@(item.IsOverDeployed ? "text-danger fw-semibold" : "text-secondary")">
+                                    @item.UsedSeats / @(item.Seats == 0 ? "illimité" : item.Seats.ToString())
+                                </td>
+                                <td class="text-secondary">@item.Supplier?.Name</td>
+                                <td class="@ExpirationStatus.CssClass(item.ExpirationDate)">
+                                    @ExpirationStatus.Label(item.ExpirationDate)
+                                </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="newSoftwareLicenseModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="ti ti-license me-2"></i>Nouvel élément - Licence</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="glpi-fiche-field">
+                    <label>Nom<span class="text-danger ms-1" title="Champ obligatoire">*</span></label>
+                    <input class="form-control" @bind="_newItem.Name" @bind:event="oninput" />
+                </div>
+                <div class="glpi-fiche-field">
+                    <label>Date d'expiration</label>
+                    <input class="form-control" type="date" @bind="_newItem.ExpirationDate" />
+                </div>
+                <p class="hint">Le reste se renseigne sur la fiche, une fois l'élément créé.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" disabled="@string.IsNullOrWhiteSpace(_newItem.Name)"
+                        @onclick="CreateAsync">
+                    <i class="ti ti-plus me-1"></i>Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

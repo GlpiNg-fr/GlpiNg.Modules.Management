@@ -1,0 +1,207 @@
+@page "/management/contacts/{ContactId:int}"
+@rendermode InteractiveServer
+
+<PageTitle>@(_contact?.DisplayName ?? "Contact") — GlpiNg</PageTitle>
+
+@if (_contact is null)
+{
+    <div class="card"><div class="card-body text-center text-secondary py-5">Contact introuvable.</div></div>
+}
+else
+{
+    <div class="glpi-fiche">
+        <div class="glpi-fiche-header d-flex align-items-center justify-content-between">
+            <h2 class="mb-0"><i class="ti ti-address-book me-2"></i>@_contact.DisplayName</h2>
+            <div class="btn-list">
+                <a class="btn" href="/management/contacts"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
+                            title="Supprimer">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
+                        <p class="mb-2">Supprimer ce contact ? Cette action est définitive.</p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-sm">Annuler</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">Supprimer</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-warning" disabled="@_isSaving" @onclick="SaveAsync">
+                    <i class="ti ti-device-floppy me-1"></i>Enregistrer
+                </button>
+            </div>
+        </div>
+
+        <div class="glpi-fiche-layout">
+            <aside class="glpi-fiche-sidebar">
+                @foreach ((string key, string label, string icon, int? count) in Tabs)
+                {
+                    <button type="button" class="glpi-fiche-tab-item @(_activeTab == key ? "active" : "")"
+                            @onclick="() => _activeTab = key">
+                        <i class="ti @icon"></i>
+                        <span>@label</span>
+                        @if (count is { } value)
+                        {
+                            <span class="glpi-fiche-tab-count">@value</span>
+                        }
+                    </button>
+                }
+            </aside>
+
+            <div class="glpi-fiche-panel">
+                @switch (_activeTab)
+                {
+                    case "fiche":
+                        @if (_error is not null)
+                        {
+                            <div class="alert alert-danger">@_error</div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="glpi-fiche-field">
+                                    <label>Nom<span class="text-danger ms-1">*</span></label>
+                                    <input class="form-control" @bind="_contact.Name" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Prénom</label>
+                                    <input class="form-control" @bind="_contact.FirstName" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Fonction</label>
+                                    <input class="form-control" @bind="_contact.Type" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Titre</label>
+                                    <input class="form-control" @bind="_contact.Title" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Adresse</label>
+                                    <textarea class="form-control" rows="2" @bind="_contact.Address"></textarea>
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Code postal</label>
+                                    <input class="form-control" @bind="_contact.PostCode" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Ville</label>
+                                    <input class="form-control" @bind="_contact.Town" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Pays</label>
+                                    <input class="form-control" @bind="_contact.Country" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="glpi-fiche-field">
+                                    <label>Téléphone</label>
+                                    <input class="form-control" @bind="_contact.Phone" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Téléphone 2</label>
+                                    <input class="form-control" @bind="_contact.Phone2" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Mobile</label>
+                                    <input class="form-control" @bind="_contact.Mobile" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Fax</label>
+                                    <input class="form-control" @bind="_contact.Fax" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Courriel</label>
+                                    <input class="form-control" type="email" @bind="_contact.Email" />
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Actif</label>
+                                    <select class="form-select" value="@(_contact.IsActive ? "true" : "false")"
+                                            @onchange="@(e => _contact.IsActive = e.Value?.ToString() == "true")">
+                                        <option value="true">Oui</option>
+                                        <option value="false">Non</option>
+                                    </select>
+                                </div>
+                                <div class="glpi-fiche-field">
+                                    <label>Commentaires</label>
+                                    <textarea class="form-control" rows="3" @bind="_contact.Comment"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+
+                    case "fournisseurs":
+                        <p class="text-secondary">Tiers chez lesquels cette personne est l'interlocuteur.</p>
+
+                        <div class="d-flex gap-2 mb-3" style="max-width: 32rem;">
+                            <select class="form-select" @bind="_supplierToAdd">
+                                <option value="0">Rattacher un fournisseur…</option>
+                                @foreach (Supplier candidate in _supplierCandidates)
+                                {
+                                    <option value="@candidate.Id">@candidate.Name</option>
+                                }
+                            </select>
+                            <button type="button" class="btn btn-primary" disabled="@(_supplierToAdd == 0)"
+                                    @onclick="AttachSupplierAsync">
+                                <i class="ti ti-plus me-1"></i>Rattacher
+                            </button>
+                        </div>
+
+                        @if (_suppliers.Count == 0)
+                        {
+                            <div class="glpi-config-placeholder">
+                                <i class="ti ti-truck"></i>
+                                <p class="mb-0">Aucun fournisseur rattaché.</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-vcenter">
+                                    <thead>
+                                        <tr><th>Nom</th><th>Type</th><th>Ville</th><th>Téléphone</th><th style="width: 3rem;"></th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Supplier supplier in _suppliers)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="@($"/management/suppliers/{supplier.Id}")" class="text-reset fw-semibold">
+                                                        @supplier.Name
+                                                    </a>
+                                                </td>
+                                                <td class="text-secondary">@supplier.Type</td>
+                                                <td class="text-secondary">@supplier.Town</td>
+                                                <td class="text-secondary">@supplier.Phone</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="Détacher"
+                                                            @onclick="() => DetachSupplierAsync(supplier.Id)">
+                                                        <i class="ti ti-unlink"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        break;
+
+                    case "documents":
+                        <ItemDocumentsTab ItemType="@ItemTypes.Contact" ItemId="ContactId" AuthorName="@_currentUserName"
+                                          CountChanged="count => _documentCount = count" />
+                        break;
+
+                    case "notes":
+                        <ItemNotesTab ItemType="@ItemTypes.Contact" ItemId="ContactId" AuthorName="@_currentUserName"
+                                      CountChanged="count => _noteCount = count" />
+                        break;
+
+                    case "historique":
+                        <ItemHistoryTab Rows="_history" />
+                        break;
+                }
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,162 @@
+@page "/management/contracts"
+@rendermode InteractiveServer
+
+<PageTitle>Contrats — GlpiNg</PageTitle>
+
+<div class="glpi-list-page">
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between glpi-list-toolbar">
+        <div class="btn-list">
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="ti ti-search me-1"></i>Rechercher
+                </button>
+                <div class="dropdown-menu p-3" style="min-width: 280px;">
+                    <div class="input-icon">
+                        <span class="input-icon-addon"><i class="ti ti-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Rechercher un contrat..."
+                               @bind="_searchTerm" @bind:event="oninput" @onkeyup="OnSearchChanged" />
+                    </div>
+                </div>
+            </div>
+
+            <label class="form-check form-switch align-self-center mb-0 ms-2">
+                <input class="form-check-input" type="checkbox" checked="@_expiringOnly"
+                       @onchange="@((ChangeEventArgs e) => OnExpiringOnlyChanged((bool)(e.Value ?? false)))" />
+                @* Le préavis est la seule date qui coûte cher à manquer : un filtre d'un clic vaut
+                   mieux qu'un tri à refaire chaque mois. *@
+                <span class="form-check-label">Préavis dans moins de 90 jours</span>
+            </label>
+        </div>
+
+        <div class="btn-list align-items-center">
+            <div class="dropdown">
+                <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
+                        disabled="@(_selectedIds.Count == 0)" title="Supprimer la sélection">
+                    <i class="ti ti-trash"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
+                    <p class="mb-2">Supprimer @_selectedIds.Count contrat(s) et leurs coûts ? Cette action est définitive.</p>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm">Annuler</button>
+                        <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteSelectedAsync">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-icon" @onclick="LoadAsync" title="Rafraîchir">
+                <i class="ti ti-refresh"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newContractModal">
+                <i class="ti ti-plus me-1"></i>Ajouter
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th style="width: 2.5rem;">
+                        <input class="form-check-input m-0" type="checkbox" title="Sélectionner les éléments visibles"
+                               checked="@AllSelected"
+                               @onchange="@((ChangeEventArgs e) => ToggleSelectAll((bool)(e.Value ?? false)))" />
+                    </th>
+                    <th>Nom</th>
+                    <th>Numéro</th>
+                    <th>Type</th>
+                    <th>Fournisseurs</th>
+                    <th>Début</th>
+                    <th>Échéance</th>
+                    <th>Préavis avant</th>
+                    <th class="text-end">Coût total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (_filtered.Count == 0)
+                {
+                    <tr><td colspan="9" class="text-center text-secondary py-4">Aucun contrat.</td></tr>
+                }
+                else
+                {
+                    @foreach (Contract contract in _filtered)
+                    {
+                        <tr>
+                            <td>
+                                <input class="form-check-input m-0" type="checkbox" checked="@_selectedIds.Contains(contract.Id)"
+                                       @onchange="@((ChangeEventArgs e) => ToggleSelect(contract.Id, (bool)(e.Value ?? false)))" />
+                            </td>
+                            <td>
+                                <a href="@($"/management/contracts/{contract.Id}")" class="text-reset fw-semibold">
+                                    <i class="ti ti-file-text me-1 text-secondary"></i>@contract.Name
+                                </a>
+                            </td>
+                            <td class="text-secondary">@contract.Number</td>
+                            <td class="text-secondary">@contract.Type</td>
+                            <td class="text-secondary">
+                                @string.Join(", ", contract.Suppliers.Select(link => link.Supplier?.Name))
+                            </td>
+                            <td class="text-secondary">@contract.StartDate?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-secondary">@contract.EndDate?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (contract.NoticeDeadline is { } deadline)
+                                {
+                                    <span class="@(IsUrgent(deadline) ? "text-danger fw-semibold" : "text-secondary")">
+                                        @deadline.ToString("dd/MM/yyyy")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-secondary">—</span>
+                                }
+                            </td>
+                            <td class="text-end">@Money.Format(contract.Costs.Sum(cost => cost.Amount))</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="newContractModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="ti ti-file-text me-2"></i>Nouvel élément - Contrat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="glpi-fiche-field">
+                    <label>Nom<span class="text-danger ms-1" title="Champ obligatoire">*</span></label>
+                    <input class="form-control" @bind="_newContract.Name" @bind:event="oninput" />
+                </div>
+                <div class="glpi-fiche-field">
+                    <label>Numéro</label>
+                    <input class="form-control" @bind="_newContract.Number" />
+                </div>
+                <div class="glpi-fiche-field">
+                    <label>Type</label>
+                    <input class="form-control" placeholder="Maintenance, location, abonnement…" @bind="_newContract.Type" />
+                </div>
+                <div class="glpi-fiche-field">
+                    <label>Date de début</label>
+                    <input class="form-control" type="date" @bind="_newContract.StartDate" />
+                </div>
+                <div class="glpi-fiche-field">
+                    <label>Durée (mois)</label>
+                    <input class="form-control" type="number" min="0" @bind="_newContract.DurationMonths" />
+                </div>
+                <p class="hint">Fournisseurs et coûts se rattachent sur la fiche, une fois le contrat créé.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" disabled="@string.IsNullOrWhiteSpace(_newContract.Name)"
+                        @onclick="CreateAsync">
+                    <i class="ti ti-plus me-1"></i>Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
