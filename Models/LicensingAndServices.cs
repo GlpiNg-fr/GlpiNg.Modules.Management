@@ -219,7 +219,4 @@ public static class ExpirationStatus
         IsExpired(expiration) ? "text-danger fw-semibold"
         : IsExpiringSoon(expiration) ? "text-warning fw-semibold"
         : "text-secondary";
-
-    public static string Label(DateTime? expiration) =>
-        expiration is { } date ? date.ToString("dd/MM/yyyy") : "—";
 }

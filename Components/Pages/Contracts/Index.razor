@@ -97,13 +97,13 @@
                             <td class="text-secondary">
                                 @string.Join(", ", contract.Suppliers.Select(link => link.Supplier?.Name))
                             </td>
-                            <td class="text-secondary">@contract.StartDate?.ToString("dd/MM/yyyy")</td>
-                            <td class="text-secondary">@contract.EndDate?.ToString("dd/MM/yyyy")</td>
+                            <td class="text-secondary">@Display.LocalDate(contract.StartDate)</td>
+                            <td class="text-secondary">@Display.LocalDate(contract.EndDate)</td>
                             <td>
                                 @if (contract.NoticeDeadline is { } deadline)
                                 {
                                     <span class="@(IsUrgent(deadline) ? "text-danger fw-semibold" : "text-secondary")">
-                                        @deadline.ToString("dd/MM/yyyy")
+                                        @Display.LocalDate(deadline)
                                     </span>
                                 }
                                 else

@@ -60,11 +60,11 @@ else
 
                         @if (ExpirationStatus.IsExpired(_item.ExpirationDate))
                         {
-                            <div class="alert alert-danger">Cet élément a expiré le @ExpirationStatus.Label(_item.ExpirationDate).</div>
+                            <div class="alert alert-danger">Cet élément a expiré le @(Display.LocalDate(_item.ExpirationDate) ?? "—").</div>
                         }
                         else if (ExpirationStatus.IsExpiringSoon(_item.ExpirationDate))
                         {
-                            <div class="alert alert-warning">Expire le @ExpirationStatus.Label(_item.ExpirationDate).</div>
+                            <div class="alert alert-warning">Expire le @(Display.LocalDate(_item.ExpirationDate) ?? "—").</div>
                         }
 
                         <div class="row">

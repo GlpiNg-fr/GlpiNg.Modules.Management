@@ -165,7 +165,7 @@ else
                                                 </td>
                                                 <td class="text-secondary">@cost.Name</td>
                                                 <td class="text-secondary">
-                                                    @cost.StartDate?.ToString("dd/MM/yyyy") — @cost.EndDate?.ToString("dd/MM/yyyy")
+                                                    @Display.LocalDate(cost.StartDate) — @Display.LocalDate(cost.EndDate)
                                                 </td>
                                                 <td class="text-end">@Money.Format(cost.Amount)</td>
                                             </tr>

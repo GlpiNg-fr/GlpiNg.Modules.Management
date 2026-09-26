@@ -208,8 +208,8 @@ else
                                                 </td>
                                                 <td class="text-secondary">@contract.Number</td>
                                                 <td class="text-secondary">@contract.Type</td>
-                                                <td class="text-secondary">@contract.StartDate?.ToString("dd/MM/yyyy")</td>
-                                                <td class="text-secondary">@contract.EndDate?.ToString("dd/MM/yyyy")</td>
+                                                <td class="text-secondary">@Display.LocalDate(contract.StartDate)</td>
+                                                <td class="text-secondary">@Display.LocalDate(contract.EndDate)</td>
                                             </tr>
                                         }
                                     </tbody>

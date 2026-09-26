@@ -137,12 +137,12 @@ else
 
                                 <div class="glpi-fiche-field">
                                     <label>Échéance</label>
-                                    <input class="form-control" disabled value="@(_contract.EndDate?.ToString("dd/MM/yyyy") ?? "Sans terme")" />
+                                    <input class="form-control" disabled value="@(Display.LocalDate(_contract.EndDate) ?? "Sans terme")" />
                                 </div>
                                 <div class="glpi-fiche-field">
                                     <label>Dénoncer avant le</label>
                                     <input class="form-control @(NoticeIsUrgent ? "text-danger fw-semibold" : "")"
-                                           disabled value="@(_contract.NoticeDeadline?.ToString("dd/MM/yyyy") ?? "—")" />
+                                           disabled value="@(Display.LocalDate(_contract.NoticeDeadline) ?? "—")" />
                                     @if (NoticeIsUrgent)
                                     {
                                         <p class="hint text-danger mb-0">
@@ -282,7 +282,7 @@ else
                                             <tr>
                                                 <td>@cost.Name</td>
                                                 <td class="text-secondary">
-                                                    @cost.StartDate?.ToString("dd/MM/yyyy") — @cost.EndDate?.ToString("dd/MM/yyyy")
+                                                    @Display.LocalDate(cost.StartDate) — @Display.LocalDate(cost.EndDate)
                                                 </td>
                                                 <td class="text-secondary">
                                                     @if (cost.Budget is { } budget)

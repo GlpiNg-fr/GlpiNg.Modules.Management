@@ -96,7 +96,7 @@
                                 </td>
                                 <td class="text-secondary">@item.Supplier?.Name</td>
                                 <td class="@ExpirationStatus.CssClass(item.ExpirationDate)">
-                                    @ExpirationStatus.Label(item.ExpirationDate)
+                                    @(Display.LocalDate(item.ExpirationDate) ?? "—")
                                 </td>
                         </tr>
                     }

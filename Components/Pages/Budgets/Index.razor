@@ -91,7 +91,7 @@
                             <td class="text-secondary">@budget.Code</td>
                             <td class="text-secondary">@budget.Type</td>
                             <td class="text-secondary">
-                                @budget.StartDate?.ToString("dd/MM/yyyy") — @budget.EndDate?.ToString("dd/MM/yyyy")
+                                @Display.LocalDate(budget.StartDate) — @Display.LocalDate(budget.EndDate)
                             </td>
                             <td class="text-end">@Money.Format(budget.Amount)</td>
                             <td class="text-end text-secondary">@Money.Format(spent)</td>
