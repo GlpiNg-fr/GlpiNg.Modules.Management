@@ -123,7 +123,7 @@ public partial class Index : ComponentBase
 
         _newContact = NewBlank();
 
-        await JS.InvokeVoidAsync("glpiNg.hideModal", "newContactModal");
+        await JS.InvokeVoidAsync("glping.hideModal", "newContactModal");
         await LoadAsync();
     }
 

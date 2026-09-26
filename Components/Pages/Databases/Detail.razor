@@ -9,8 +9,8 @@
 }
 else
 {
-    <div class="glpi-fiche">
-        <div class="glpi-fiche-header d-flex align-items-center justify-content-between">
+    <div class="glping-fiche">
+        <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-database me-2"></i>@_item.Name</h2>
             <div class="btn-list">
                 <a class="btn" href="/management/databases"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
@@ -33,23 +33,23 @@ else
             </div>
         </div>
 
-        <div class="glpi-fiche-layout">
-            <aside class="glpi-fiche-sidebar">
+        <div class="glping-fiche-layout">
+            <aside class="glping-fiche-sidebar">
                 @foreach ((string key, string label, string icon, int? count) in Tabs)
                 {
-                    <button type="button" class="glpi-fiche-tab-item @(_activeTab == key ? "active" : "")"
+                    <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
                         <span>@label</span>
                         @if (count is { } value)
                         {
-                            <span class="glpi-fiche-tab-count">@value</span>
+                            <span class="glping-fiche-tab-count">@value</span>
                         }
                     </button>
                 }
             </aside>
 
-            <div class="glpi-fiche-panel">
+            <div class="glping-fiche-panel">
                 @switch (_activeTab)
                 {
                     case "fiche":
@@ -60,33 +60,33 @@ else
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Nom<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_item.Name" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Moteur</label>
                                     <input class="form-control" @bind="_item.Engine" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Version</label>
                                     <input class="form-control" @bind="_item.Version" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Serveur hôte</label>
                                     <input class="form-control" @bind="_item.HostName" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Port</label>
                                     <input class="form-control" type="number" @bind="_item.Port" />
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Chemin des données</label>
                                     <input class="form-control" @bind="_item.Path" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Sauvegardée</label>
                                     <select class="form-select" value="@(_item.IsBackedUp ? "true" : "false")"
                                             @onchange="@(e => _item.IsBackedUp = e.Value?.ToString() == "true")">
@@ -94,7 +94,7 @@ else
                                         <option value="false">Non</option>
                                     </select>
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Actif</label>
                                     <select class="form-select" value="@(_item.IsActive ? "true" : "false")"
                                             @onchange="@(e => _item.IsActive = e.Value?.ToString() == "true")">
@@ -102,7 +102,7 @@ else
                                         <option value="false">Non</option>
                                     </select>
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Commentaires</label>
                                     <textarea class="form-control" rows="3" @bind="_item.Comment"></textarea>
                                 </div>

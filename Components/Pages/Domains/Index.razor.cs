@@ -137,7 +137,7 @@ public partial class Index : ComponentBase
 
         _newItem = NewBlank();
 
-        await JS.InvokeVoidAsync("glpiNg.hideModal", "newDomainModal");
+        await JS.InvokeVoidAsync("glping.hideModal", "newDomainModal");
         await LoadAsync();
     }
 

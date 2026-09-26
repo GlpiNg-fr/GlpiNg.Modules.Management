@@ -124,7 +124,7 @@ public partial class Index : ComponentBase
 
         _newBudget = NewBlank();
 
-        await JS.InvokeVoidAsync("glpiNg.hideModal", "newBudgetModal");
+        await JS.InvokeVoidAsync("glping.hideModal", "newBudgetModal");
         await LoadAsync();
     }
 

@@ -140,7 +140,7 @@ public partial class Index : ComponentBase
 
         _newContract = NewBlank();
 
-        await JS.InvokeVoidAsync("glpiNg.hideModal", "newContractModal");
+        await JS.InvokeVoidAsync("glping.hideModal", "newContractModal");
         await LoadAsync();
     }
 

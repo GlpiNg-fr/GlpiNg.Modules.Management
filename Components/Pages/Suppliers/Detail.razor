@@ -9,8 +9,8 @@
 }
 else
 {
-    <div class="glpi-fiche">
-        <div class="glpi-fiche-header d-flex align-items-center justify-content-between">
+    <div class="glping-fiche">
+        <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-truck me-2"></i>@_supplier.Name</h2>
             <div class="btn-list">
                 <a class="btn" href="/management/suppliers"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
@@ -33,23 +33,23 @@ else
             </div>
         </div>
 
-        <div class="glpi-fiche-layout">
-            <aside class="glpi-fiche-sidebar">
+        <div class="glping-fiche-layout">
+            <aside class="glping-fiche-sidebar">
                 @foreach ((string key, string label, string icon, int? count) in Tabs)
                 {
-                    <button type="button" class="glpi-fiche-tab-item @(_activeTab == key ? "active" : "")"
+                    <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
                         <span>@label</span>
                         @if (count is { } value)
                         {
-                            <span class="glpi-fiche-tab-count">@value</span>
+                            <span class="glping-fiche-tab-count">@value</span>
                         }
                     </button>
                 }
             </aside>
 
-            <div class="glpi-fiche-panel">
+            <div class="glping-fiche-panel">
                 @switch (_activeTab)
                 {
                     case "fiche":
@@ -60,53 +60,53 @@ else
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Nom<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_supplier.Name" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Type</label>
                                     <input class="form-control" @bind="_supplier.Type" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Numéro d'immatriculation</label>
                                     <input class="form-control" @bind="_supplier.RegistrationNumber" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Adresse</label>
                                     <textarea class="form-control" rows="2" @bind="_supplier.Address"></textarea>
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Code postal</label>
                                     <input class="form-control" @bind="_supplier.PostCode" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Ville</label>
                                     <input class="form-control" @bind="_supplier.Town" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Pays</label>
                                     <input class="form-control" @bind="_supplier.Country" />
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Téléphone</label>
                                     <input class="form-control" @bind="_supplier.Phone" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Fax</label>
                                     <input class="form-control" @bind="_supplier.Fax" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Courriel</label>
                                     <input class="form-control" type="email" @bind="_supplier.Email" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Site web</label>
                                     <input class="form-control" type="url" @bind="_supplier.Website" />
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Actif</label>
                                     <select class="form-select" value="@(_supplier.IsActive ? "true" : "false")"
                                             @onchange="@(e => _supplier.IsActive = e.Value?.ToString() == "true")">
@@ -114,7 +114,7 @@ else
                                         <option value="false">Non</option>
                                     </select>
                                 </div>
-                                <div class="glpi-fiche-field">
+                                <div class="glping-fiche-field">
                                     <label>Commentaires</label>
                                     <textarea class="form-control" rows="3" @bind="_supplier.Comment"></textarea>
                                 </div>
@@ -141,7 +141,7 @@ else
 
                         @if (_contacts.Count == 0)
                         {
-                            <div class="glpi-config-placeholder">
+                            <div class="glping-config-placeholder">
                                 <i class="ti ti-address-book"></i>
                                 <p class="mb-0">Aucun contact rattaché.</p>
                             </div>
@@ -182,7 +182,7 @@ else
                     case "contrats":
                         @if (_contracts.Count == 0)
                         {
-                            <div class="glpi-config-placeholder">
+                            <div class="glping-config-placeholder">
                                 <i class="ti ti-file-text"></i>
                                 <p class="mb-0">Aucun contrat avec ce fournisseur.</p>
                             </div>

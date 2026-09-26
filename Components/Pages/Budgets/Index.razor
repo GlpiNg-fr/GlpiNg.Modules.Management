@@ -3,9 +3,9 @@
 
 <PageTitle>Budgets — GlpiNg</PageTitle>
 
-<div class="glpi-list-page">
+<div class="glping-list-page">
 <div class="card">
-    <div class="card-header d-flex align-items-center justify-content-between glpi-list-toolbar">
+    <div class="card-header d-flex align-items-center justify-content-between glping-list-toolbar">
         <div class="btn-list">
             <div class="dropdown">
                 <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -118,27 +118,27 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Nom<span class="text-danger ms-1" title="Champ obligatoire">*</span></label>
                     <input class="form-control" @bind="_newBudget.Name" @bind:event="oninput" />
                 </div>
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Code</label>
                     <input class="form-control" @bind="_newBudget.Code" />
                 </div>
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Type</label>
                     <input class="form-control" placeholder="Investissement, fonctionnement…" @bind="_newBudget.Type" />
                 </div>
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Montant alloué</label>
                     <input class="form-control" type="number" step="0.01" @bind="_newBudget.Amount" />
                 </div>
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Début</label>
                     <input class="form-control" type="date" @bind="_newBudget.StartDate" />
                 </div>
-                <div class="glpi-fiche-field">
+                <div class="glping-fiche-field">
                     <label>Fin</label>
                     <input class="form-control" type="date" @bind="_newBudget.EndDate" />
                 </div>
