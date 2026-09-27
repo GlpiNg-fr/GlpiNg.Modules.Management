@@ -5,6 +5,7 @@ using GlpiNg.Modules.Management.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using GlpiNg.Modules.Abstractions.Localization;
 
 namespace GlpiNg.Modules.Management.Components.Pages.Budgets;
 
@@ -100,13 +101,13 @@ public partial class Detail : ComponentBase
 
         if (string.IsNullOrWhiteSpace(_budget.Name))
         {
-            _error = "Le nom est obligatoire.";
+            _error = Tr.T("Le nom est obligatoire.");
             return;
         }
 
         if (_budget.StartDate is { } start && _budget.EndDate is { } end && end < start)
         {
-            _error = "La date de fin précède la date de début.";
+            _error = Tr.T("La date de fin précède la date de début.");
             return;
         }
 
@@ -153,7 +154,7 @@ public partial class Detail : ComponentBase
 
             await db.SaveChangesAsync();
 
-            ToastService.Notify(new ToastMessage(ToastType.Success, "Budget enregistré."));
+            ToastService.Notify(new ToastMessage(ToastType.Success, Tr.T("Budget enregistré.")));
             await LoadAsync();
         }
         finally

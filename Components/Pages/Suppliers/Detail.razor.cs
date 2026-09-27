@@ -4,6 +4,7 @@ using GlpiNg.Modules.Management.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using GlpiNg.Modules.Abstractions.Localization;
 
 namespace GlpiNg.Modules.Management.Components.Pages.Suppliers;
 
@@ -116,7 +117,7 @@ public partial class Detail : ComponentBase
 
         if (string.IsNullOrWhiteSpace(_supplier.Name))
         {
-            _error = "Le nom est obligatoire.";
+            _error = Tr.T("Le nom est obligatoire.");
             return;
         }
 
@@ -173,7 +174,7 @@ public partial class Detail : ComponentBase
 
             await db.SaveChangesAsync();
 
-            ToastService.Notify(new ToastMessage(ToastType.Success, "Fournisseur enregistré."));
+            ToastService.Notify(new ToastMessage(ToastType.Success, Tr.T("Fournisseur enregistré.")));
             await LoadAsync();
         }
         finally
@@ -227,7 +228,7 @@ public partial class Detail : ComponentBase
 
         if (await db.Set<ContractSupplier>().AnyAsync(link => link.SupplierId == SupplierId))
         {
-            _error = "Ce fournisseur figure encore sur un contrat : détachez-le du contrat avant de le supprimer.";
+            _error = Tr.T("Ce fournisseur figure encore sur un contrat : détachez-le du contrat avant de le supprimer.");
             _activeTab = "fiche";
             return;
         }

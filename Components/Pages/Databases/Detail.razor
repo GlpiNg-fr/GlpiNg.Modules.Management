@@ -1,11 +1,11 @@
 @page "/management/databases/{DatabaseId:int}"
 @rendermode InteractiveServer
 
-<PageTitle>@(_item?.Name ?? "Base de données") — GlpiNg</PageTitle>
+<PageTitle>@(_item?.Name ?? T("Base de données")) — GlpiNg</PageTitle>
 
 @if (_item is null)
 {
-    <div class="card"><div class="card-body text-center text-secondary py-5">Élément introuvable.</div></div>
+    <div class="card"><div class="card-body text-center text-secondary py-5">@T("Élément introuvable.")</div></div>
 }
 else
 {
@@ -13,22 +13,22 @@ else
         <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-database me-2"></i>@_item.Name</h2>
             <div class="btn-list">
-                <a class="btn" href="/management/databases"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
+                <a class="btn" href="/management/databases"><i class="ti ti-arrow-left me-1"></i>@T("Retour à la liste")</a>
                 <div class="dropdown">
                     <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
-                            title="Supprimer">
+                            title="@(T("Supprimer"))">
                         <i class="ti ti-trash"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
-                        <p class="mb-2">Supprimer cet élément ? Cette action est définitive.</p>
+                        <p class="mb-2">@T("Supprimer cet élément ? Cette action est définitive.")</p>
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm">Annuler</button>
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">Supprimer</button>
+                            <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">@T("Supprimer")</button>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" disabled="@_isSaving" @onclick="SaveAsync">
-                    <i class="ti ti-device-floppy me-1"></i>Enregistrer
+                    <i class="ti ti-device-floppy me-1"></i>@T("Enregistrer")
                 </button>
             </div>
         </div>
@@ -40,7 +40,7 @@ else
                     <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
-                        <span>@label</span>
+                        <span>@T(label)</span>
                         @if (count is { } value)
                         {
                             <span class="glping-fiche-tab-count">@value</span>
@@ -61,49 +61,49 @@ else
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Nom<span class="text-danger ms-1">*</span></label>
+                                    <label>@T("Nom")<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_item.Name" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Moteur</label>
+                                    <label>@T("Moteur")</label>
                                     <input class="form-control" @bind="_item.Engine" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Version</label>
+                                    <label>@T("Version")</label>
                                     <input class="form-control" @bind="_item.Version" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Serveur hôte</label>
+                                    <label>@T("Serveur hôte")</label>
                                     <input class="form-control" @bind="_item.HostName" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Port</label>
+                                    <label>@T("Port")</label>
                                     <input class="form-control" type="number" @bind="_item.Port" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Chemin des données</label>
+                                    <label>@T("Chemin des données")</label>
                                     <input class="form-control" @bind="_item.Path" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Sauvegardée</label>
+                                    <label>@T("Sauvegardée")</label>
                                     <select class="form-select" value="@(_item.IsBackedUp ? "true" : "false")"
                                             @onchange="@(e => _item.IsBackedUp = e.Value?.ToString() == "true")">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
+                                        <option value="true">@T("Oui")</option>
+                                        <option value="false">@T("Non")</option>
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Actif</label>
+                                    <label>@T("Actif")</label>
                                     <select class="form-select" value="@(_item.IsActive ? "true" : "false")"
                                             @onchange="@(e => _item.IsActive = e.Value?.ToString() == "true")">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
+                                        <option value="true">@T("Oui")</option>
+                                        <option value="false">@T("Non")</option>
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Commentaires</label>
+                                    <label>@T("Commentaires")</label>
                                     <textarea class="form-control" rows="3" @bind="_item.Comment"></textarea>
                                 </div>
                             </div>

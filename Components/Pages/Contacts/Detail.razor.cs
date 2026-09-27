@@ -4,6 +4,7 @@ using GlpiNg.Modules.Management.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using GlpiNg.Modules.Abstractions.Localization;
 
 namespace GlpiNg.Modules.Management.Components.Pages.Contacts;
 
@@ -105,7 +106,7 @@ public partial class Detail : ComponentBase
 
         if (string.IsNullOrWhiteSpace(_contact.Name))
         {
-            _error = "Le nom est obligatoire.";
+            _error = Tr.T("Le nom est obligatoire.");
             return;
         }
 
@@ -166,7 +167,7 @@ public partial class Detail : ComponentBase
 
             await db.SaveChangesAsync();
 
-            ToastService.Notify(new ToastMessage(ToastType.Success, "Contact enregistré."));
+            ToastService.Notify(new ToastMessage(ToastType.Success, Tr.T("Contact enregistré.")));
             await LoadAsync();
         }
         finally

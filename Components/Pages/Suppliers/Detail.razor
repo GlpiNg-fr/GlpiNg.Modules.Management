@@ -1,11 +1,11 @@
 @page "/management/suppliers/{SupplierId:int}"
 @rendermode InteractiveServer
 
-<PageTitle>@(_supplier?.Name ?? "Fournisseur") — GlpiNg</PageTitle>
+<PageTitle>@(_supplier?.Name ?? T("Fournisseur")) — GlpiNg</PageTitle>
 
 @if (_supplier is null)
 {
-    <div class="card"><div class="card-body text-center text-secondary py-5">Fournisseur introuvable.</div></div>
+    <div class="card"><div class="card-body text-center text-secondary py-5">@T("Fournisseur introuvable.")</div></div>
 }
 else
 {
@@ -13,22 +13,22 @@ else
         <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-truck me-2"></i>@_supplier.Name</h2>
             <div class="btn-list">
-                <a class="btn" href="/management/suppliers"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
+                <a class="btn" href="/management/suppliers"><i class="ti ti-arrow-left me-1"></i>@T("Retour à la liste")</a>
                 <div class="dropdown">
                     <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
-                            title="Supprimer">
+                            title="@(T("Supprimer"))">
                         <i class="ti ti-trash"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
-                        <p class="mb-2">Supprimer ce fournisseur ? Cette action est définitive.</p>
+                        <p class="mb-2">@T("Supprimer ce fournisseur ? Cette action est définitive.")</p>
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm">Annuler</button>
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">Supprimer</button>
+                            <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">@T("Supprimer")</button>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" disabled="@_isSaving" @onclick="SaveAsync">
-                    <i class="ti ti-device-floppy me-1"></i>Enregistrer
+                    <i class="ti ti-device-floppy me-1"></i>@T("Enregistrer")
                 </button>
             </div>
         </div>
@@ -40,7 +40,7 @@ else
                     <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
-                        <span>@label</span>
+                        <span>@T(label)</span>
                         @if (count is { } value)
                         {
                             <span class="glping-fiche-tab-count">@value</span>
@@ -61,61 +61,61 @@ else
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Nom<span class="text-danger ms-1">*</span></label>
+                                    <label>@T("Nom")<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_supplier.Name" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Type</label>
+                                    <label>@T("Type")</label>
                                     <input class="form-control" @bind="_supplier.Type" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Numéro d'immatriculation</label>
+                                    <label>@T("Numéro d'immatriculation")</label>
                                     <input class="form-control" @bind="_supplier.RegistrationNumber" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Adresse</label>
+                                    <label>@T("Adresse")</label>
                                     <textarea class="form-control" rows="2" @bind="_supplier.Address"></textarea>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Code postal</label>
+                                    <label>@T("Code postal")</label>
                                     <input class="form-control" @bind="_supplier.PostCode" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Ville</label>
+                                    <label>@T("Ville")</label>
                                     <input class="form-control" @bind="_supplier.Town" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Pays</label>
+                                    <label>@T("Pays")</label>
                                     <input class="form-control" @bind="_supplier.Country" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Téléphone</label>
+                                    <label>@T("Téléphone")</label>
                                     <input class="form-control" @bind="_supplier.Phone" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Fax</label>
+                                    <label>@T("Fax")</label>
                                     <input class="form-control" @bind="_supplier.Fax" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Courriel</label>
+                                    <label>@T("Courriel")</label>
                                     <input class="form-control" type="email" @bind="_supplier.Email" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Site web</label>
+                                    <label>@T("Site web")</label>
                                     <input class="form-control" type="url" @bind="_supplier.Website" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Actif</label>
+                                    <label>@T("Actif")</label>
                                     <select class="form-select" value="@(_supplier.IsActive ? "true" : "false")"
                                             @onchange="@(e => _supplier.IsActive = e.Value?.ToString() == "true")">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
+                                        <option value="true">@T("Oui")</option>
+                                        <option value="false">@T("Non")</option>
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Commentaires</label>
+                                    <label>@T("Commentaires")</label>
                                     <textarea class="form-control" rows="3" @bind="_supplier.Comment"></textarea>
                                 </div>
                             </div>
@@ -123,11 +123,11 @@ else
                         break;
 
                     case "contacts":
-                        <p class="text-secondary">Interlocuteurs déclarés chez ce fournisseur.</p>
+                        <p class="text-secondary">@T("Interlocuteurs déclarés chez ce fournisseur.")</p>
 
                         <div class="d-flex gap-2 mb-3" style="max-width: 32rem;">
                             <select class="form-select" @bind="_contactToAdd">
-                                <option value="0">Rattacher un contact…</option>
+                                <option value="0">@T("Rattacher un contact…")</option>
                                 @foreach (Contact candidate in _contactCandidates)
                                 {
                                     <option value="@candidate.Id">@candidate.DisplayName</option>
@@ -135,7 +135,7 @@ else
                             </select>
                             <button type="button" class="btn btn-primary" disabled="@(_contactToAdd == 0)"
                                     @onclick="AttachContactAsync">
-                                <i class="ti ti-plus me-1"></i>Rattacher
+                                <i class="ti ti-plus me-1"></i>@T("Rattacher")
                             </button>
                         </div>
 
@@ -143,7 +143,7 @@ else
                         {
                             <div class="glping-config-placeholder">
                                 <i class="ti ti-address-book"></i>
-                                <p class="mb-0">Aucun contact rattaché.</p>
+                                <p class="mb-0">@T("Aucun contact rattaché.")</p>
                             </div>
                         }
                         else
@@ -151,7 +151,7 @@ else
                             <div class="table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
-                                        <tr><th>Nom</th><th>Fonction</th><th>Téléphone</th><th>Courriel</th><th style="width: 3rem;"></th></tr>
+                                        <tr><th>@T("Nom")</th><th>@T("Fonction")</th><th>@T("Téléphone")</th><th>@T("Courriel")</th><th style="width: 3rem;"></th></tr>
                                     </thead>
                                     <tbody>
                                         @foreach (Contact contact in _contacts)
@@ -166,7 +166,7 @@ else
                                                 <td class="text-secondary">@(contact.Phone ?? contact.Mobile)</td>
                                                 <td class="text-secondary">@contact.Email</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="Détacher"
+                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Détacher"))"
                                                             @onclick="() => DetachContactAsync(contact.Id)">
                                                         <i class="ti ti-unlink"></i>
                                                     </button>
@@ -184,18 +184,18 @@ else
                         {
                             <div class="glping-config-placeholder">
                                 <i class="ti ti-file-text"></i>
-                                <p class="mb-0">Aucun contrat avec ce fournisseur.</p>
+                                <p class="mb-0">@T("Aucun contrat avec ce fournisseur.")</p>
                             </div>
                         }
                         else
                         {
                             <p class="text-secondary">
-                                Contrats engageant ce fournisseur. Le rattachement se fait depuis la fiche du contrat.
+                                @T("Contrats engageant ce fournisseur. Le rattachement se fait depuis la fiche du contrat.")
                             </p>
                             <div class="table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
-                                        <tr><th>Nom</th><th>Numéro</th><th>Type</th><th>Début</th><th>Échéance</th></tr>
+                                        <tr><th>@T("Nom")</th><th>@T("Numéro")</th><th>@T("Type")</th><th>@T("Début")</th><th>@T("Échéance")</th></tr>
                                     </thead>
                                     <tbody>
                                         @foreach (Contract contract in _contracts)

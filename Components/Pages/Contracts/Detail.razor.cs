@@ -5,6 +5,7 @@ using GlpiNg.Modules.Management.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using GlpiNg.Modules.Abstractions.Localization;
 
 namespace GlpiNg.Modules.Management.Components.Pages.Contracts;
 
@@ -64,20 +65,20 @@ public partial class Detail : ComponentBase
     private static string PeriodicityLabel(ContractPeriodicity value) => value switch
     {
         ContractPeriodicity.None => "—",
-        ContractPeriodicity.Monthly => "Mensuelle",
-        ContractPeriodicity.Quarterly => "Trimestrielle",
-        ContractPeriodicity.Biannual => "Semestrielle",
-        ContractPeriodicity.Annual => "Annuelle",
-        ContractPeriodicity.Biennial => "Tous les 2 ans",
-        ContractPeriodicity.Triennial => "Tous les 3 ans",
+        ContractPeriodicity.Monthly => Tr.T("Mensuelle"),
+        ContractPeriodicity.Quarterly => Tr.T("Trimestrielle"),
+        ContractPeriodicity.Biannual => Tr.T("Semestrielle"),
+        ContractPeriodicity.Annual => Tr.T("Annuelle"),
+        ContractPeriodicity.Biennial => Tr.T("Tous les 2 ans"),
+        ContractPeriodicity.Triennial => Tr.T("Tous les 3 ans"),
         _ => value.ToString(),
     };
 
     private static string RenewalLabel(ContractRenewal value) => value switch
     {
-        ContractRenewal.Never => "Aucune",
-        ContractRenewal.Tacit => "Tacite",
-        ContractRenewal.Express => "Expresse",
+        ContractRenewal.Never => Tr.T("Aucune"),
+        ContractRenewal.Tacit => Tr.T("Tacite"),
+        ContractRenewal.Express => Tr.T("Expresse"),
         _ => value.ToString(),
     };
 
@@ -156,7 +157,7 @@ public partial class Detail : ComponentBase
 
         if (string.IsNullOrWhiteSpace(_contract.Name))
         {
-            _error = "Le nom est obligatoire.";
+            _error = Tr.T("Le nom est obligatoire.");
             return;
         }
 
@@ -211,7 +212,7 @@ public partial class Detail : ComponentBase
 
             await db.SaveChangesAsync();
 
-            ToastService.Notify(new ToastMessage(ToastType.Success, "Contrat enregistré."));
+            ToastService.Notify(new ToastMessage(ToastType.Success, Tr.T("Contrat enregistré.")));
             await LoadAsync();
         }
         finally

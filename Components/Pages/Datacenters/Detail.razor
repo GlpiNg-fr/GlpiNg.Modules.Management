@@ -1,11 +1,11 @@
 @page "/management/datacenters/{DatacenterId:int}"
 @rendermode InteractiveServer
 
-<PageTitle>@(_item?.Name ?? "Data center") — GlpiNg</PageTitle>
+<PageTitle>@(_item?.Name ?? T("Data center")) — GlpiNg</PageTitle>
 
 @if (_item is null)
 {
-    <div class="card"><div class="card-body text-center text-secondary py-5">Élément introuvable.</div></div>
+    <div class="card"><div class="card-body text-center text-secondary py-5">@T("Élément introuvable.")</div></div>
 }
 else
 {
@@ -13,22 +13,22 @@ else
         <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-building-warehouse me-2"></i>@_item.Name</h2>
             <div class="btn-list">
-                <a class="btn" href="/management/datacenters"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
+                <a class="btn" href="/management/datacenters"><i class="ti ti-arrow-left me-1"></i>@T("Retour à la liste")</a>
                 <div class="dropdown">
                     <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
-                            title="Supprimer">
+                            title="@(T("Supprimer"))">
                         <i class="ti ti-trash"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
-                        <p class="mb-2">Supprimer cet élément ? Cette action est définitive.</p>
+                        <p class="mb-2">@T("Supprimer cet élément ? Cette action est définitive.")</p>
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm">Annuler</button>
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">Supprimer</button>
+                            <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">@T("Supprimer")</button>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" disabled="@_isSaving" @onclick="SaveAsync">
-                    <i class="ti ti-device-floppy me-1"></i>Enregistrer
+                    <i class="ti ti-device-floppy me-1"></i>@T("Enregistrer")
                 </button>
             </div>
         </div>
@@ -40,7 +40,7 @@ else
                     <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
-                        <span>@label</span>
+                        <span>@T(label)</span>
                         @if (count is { } value)
                         {
                             <span class="glping-fiche-tab-count">@value</span>
@@ -61,29 +61,29 @@ else
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Nom<span class="text-danger ms-1">*</span></label>
+                                    <label>@T("Nom")<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_item.Name" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Lieu</label>
+                                    <label>@T("Lieu")</label>
                                     <input class="form-control" @bind="_item.Location" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Adresse</label>
+                                    <label>@T("Adresse")</label>
                                     <textarea class="form-control" rows="3" @bind="_item.Address"></textarea>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Ville</label>
+                                    <label>@T("Ville")</label>
                                     <input class="form-control" @bind="_item.Town" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Pays</label>
+                                    <label>@T("Pays")</label>
                                     <input class="form-control" @bind="_item.Country" />
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Hébergeur</label>
+                                    <label>@T("Hébergeur")</label>
                                     <select class="form-select" @bind="_supplierId">
                                         <option value="0">—</option>
                                         @foreach (Supplier supplier in _suppliers)
@@ -93,7 +93,7 @@ else
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Contrat</label>
+                                    <label>@T("Contrat")</label>
                                     <select class="form-select" @bind="_contractId">
                                         <option value="0">—</option>
                                         @foreach (Contract contract in _contracts)
@@ -103,15 +103,15 @@ else
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Actif</label>
+                                    <label>@T("Actif")</label>
                                     <select class="form-select" value="@(_item.IsActive ? "true" : "false")"
                                             @onchange="@(e => _item.IsActive = e.Value?.ToString() == "true")">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
+                                        <option value="true">@T("Oui")</option>
+                                        <option value="false">@T("Non")</option>
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Commentaires</label>
+                                    <label>@T("Commentaires")</label>
                                     <textarea class="form-control" rows="3" @bind="_item.Comment"></textarea>
                                 </div>
                             </div>

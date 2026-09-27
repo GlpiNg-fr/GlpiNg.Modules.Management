@@ -1,11 +1,11 @@
 @page "/management/contracts/{ContractId:int}"
 @rendermode InteractiveServer
 
-<PageTitle>@(_contract?.Name ?? "Contrat") — GlpiNg</PageTitle>
+<PageTitle>@(_contract?.Name ?? T("Contrat")) — GlpiNg</PageTitle>
 
 @if (_contract is null)
 {
-    <div class="card"><div class="card-body text-center text-secondary py-5">Contrat introuvable.</div></div>
+    <div class="card"><div class="card-body text-center text-secondary py-5">@T("Contrat introuvable.")</div></div>
 }
 else
 {
@@ -13,22 +13,22 @@ else
         <div class="glping-fiche-header d-flex align-items-center justify-content-between">
             <h2 class="mb-0"><i class="ti ti-file-text me-2"></i>@_contract.Name</h2>
             <div class="btn-list">
-                <a class="btn" href="/management/contracts"><i class="ti ti-arrow-left me-1"></i>Retour à la liste</a>
+                <a class="btn" href="/management/contracts"><i class="ti ti-arrow-left me-1"></i>@T("Retour à la liste")</a>
                 <div class="dropdown">
                     <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
-                            title="Supprimer">
+                            title="@(T("Supprimer"))">
                         <i class="ti ti-trash"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
-                        <p class="mb-2">Supprimer ce contrat et ses coûts ? Cette action est définitive.</p>
+                        <p class="mb-2">@T("Supprimer ce contrat et ses coûts ? Cette action est définitive.")</p>
                         <div class="d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm">Annuler</button>
-                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">Supprimer</button>
+                            <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                            <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteAsync">@T("Supprimer")</button>
                         </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" disabled="@_isSaving" @onclick="SaveAsync">
-                    <i class="ti ti-device-floppy me-1"></i>Enregistrer
+                    <i class="ti ti-device-floppy me-1"></i>@T("Enregistrer")
                 </button>
             </div>
         </div>
@@ -40,7 +40,7 @@ else
                     <button type="button" class="glping-fiche-tab-item @(_activeTab == key ? "active" : "")"
                             @onclick="() => _activeTab = key">
                         <i class="ti @icon"></i>
-                        <span>@label</span>
+                        <span>@T(label)</span>
                         @if (count is { } value)
                         {
                             <span class="glping-fiche-tab-count">@value</span>
@@ -61,49 +61,49 @@ else
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Nom<span class="text-danger ms-1">*</span></label>
+                                    <label>@T("Nom")<span class="text-danger ms-1">*</span></label>
                                     <input class="form-control" @bind="_contract.Name" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Numéro</label>
+                                    <label>@T("Numéro")</label>
                                     <input class="form-control" @bind="_contract.Number" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Type</label>
+                                    <label>@T("Type")</label>
                                     <input class="form-control" @bind="_contract.Type" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Numéro de compte</label>
+                                    <label>@T("Numéro de compte")</label>
                                     <input class="form-control" @bind="_contract.AccountNumber" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Actif</label>
+                                    <label>@T("Actif")</label>
                                     <select class="form-select" value="@(_contract.IsActive ? "true" : "false")"
                                             @onchange="@(e => _contract.IsActive = e.Value?.ToString() == "true")">
-                                        <option value="true">Oui</option>
-                                        <option value="false">Non</option>
+                                        <option value="true">@T("Oui")</option>
+                                        <option value="false">@T("Non")</option>
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Commentaires</label>
+                                    <label>@T("Commentaires")</label>
                                     <textarea class="form-control" rows="3" @bind="_contract.Comment"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="glping-fiche-field">
-                                    <label>Date de début</label>
+                                    <label>@T("Date de début")</label>
                                     <input class="form-control" type="date" @bind="_contract.StartDate" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Durée (mois)</label>
+                                    <label>@T("Durée (mois)")</label>
                                     <input class="form-control" type="number" min="0" @bind="_contract.DurationMonths" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Préavis (mois)</label>
+                                    <label>@T("Préavis (mois)")</label>
                                     <input class="form-control" type="number" min="0" @bind="_contract.NoticeMonths" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Périodicité</label>
+                                    <label>@T("Périodicité")</label>
                                     <select class="form-select" value="@_contract.Periodicity"
                                             @onchange="@(e => _contract.Periodicity = ParsePeriodicity(e.Value))">
                                         @foreach (ContractPeriodicity value in Enum.GetValues<ContractPeriodicity>())
@@ -113,7 +113,7 @@ else
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Périodicité de facturation</label>
+                                    <label>@T("Périodicité de facturation")</label>
                                     <select class="form-select" value="@_contract.BillingPeriodicity"
                                             @onchange="@(e => _contract.BillingPeriodicity = ParsePeriodicity(e.Value))">
                                         @foreach (ContractPeriodicity value in Enum.GetValues<ContractPeriodicity>())
@@ -123,7 +123,7 @@ else
                                     </select>
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Reconduction</label>
+                                    <label>@T("Reconduction")</label>
                                     <select class="form-select" value="@_contract.Renewal"
                                             @onchange="@(e => _contract.Renewal = ParseRenewal(e.Value))">
                                         @foreach (ContractRenewal value in Enum.GetValues<ContractRenewal>())
@@ -136,17 +136,17 @@ else
                                 <hr />
 
                                 <div class="glping-fiche-field">
-                                    <label>Échéance</label>
-                                    <input class="form-control" disabled value="@(Display.LocalDate(_contract.EndDate) ?? "Sans terme")" />
+                                    <label>@T("Échéance")</label>
+                                    <input class="form-control" disabled value="@(Display.LocalDate(_contract.EndDate) ?? T("Sans terme"))" />
                                 </div>
                                 <div class="glping-fiche-field">
-                                    <label>Dénoncer avant le</label>
+                                    <label>@T("Dénoncer avant le")</label>
                                     <input class="form-control @(NoticeIsUrgent ? "text-danger fw-semibold" : "")"
                                            disabled value="@(Display.LocalDate(_contract.NoticeDeadline) ?? "—")" />
                                     @if (NoticeIsUrgent)
                                     {
                                         <p class="hint text-danger mb-0">
-                                            Le préavis court : passé cette date, le contrat se reconduit ou se poursuit.
+                                            @T("Le préavis court : passé cette date, le contrat se reconduit ou se poursuit.")
                                         </p>
                                     }
                                 </div>
@@ -155,11 +155,11 @@ else
                         break;
 
                     case "fournisseurs":
-                        <p class="text-secondary">Tiers engagés par ce contrat.</p>
+                        <p class="text-secondary">@T("Tiers engagés par ce contrat.")</p>
 
                         <div class="d-flex gap-2 mb-3" style="max-width: 32rem;">
                             <select class="form-select" @bind="_supplierToAdd">
-                                <option value="0">Rattacher un fournisseur…</option>
+                                <option value="0">@T("Rattacher un fournisseur…")</option>
                                 @foreach (Supplier candidate in _supplierCandidates)
                                 {
                                     <option value="@candidate.Id">@candidate.Name</option>
@@ -167,7 +167,7 @@ else
                             </select>
                             <button type="button" class="btn btn-primary" disabled="@(_supplierToAdd == 0)"
                                     @onclick="AttachSupplierAsync">
-                                <i class="ti ti-plus me-1"></i>Rattacher
+                                <i class="ti ti-plus me-1"></i>@T("Rattacher")
                             </button>
                         </div>
 
@@ -175,7 +175,7 @@ else
                         {
                             <div class="glping-config-placeholder">
                                 <i class="ti ti-truck"></i>
-                                <p class="mb-0">Aucun fournisseur rattaché.</p>
+                                <p class="mb-0">@T("Aucun fournisseur rattaché.")</p>
                             </div>
                         }
                         else
@@ -183,7 +183,7 @@ else
                             <div class="table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
-                                        <tr><th>Nom</th><th>Type</th><th>Téléphone</th><th>Courriel</th><th style="width: 3rem;"></th></tr>
+                                        <tr><th>@T("Nom")</th><th>@T("Type")</th><th>@T("Téléphone")</th><th>@T("Courriel")</th><th style="width: 3rem;"></th></tr>
                                     </thead>
                                     <tbody>
                                         @foreach (Supplier supplier in _suppliers)
@@ -198,7 +198,7 @@ else
                                                 <td class="text-secondary">@supplier.Phone</td>
                                                 <td class="text-secondary">@supplier.Email</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="Détacher"
+                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Détacher"))"
                                                             @onclick="() => DetachSupplierAsync(supplier.Id)">
                                                         <i class="ti ti-unlink"></i>
                                                     </button>
@@ -213,31 +213,30 @@ else
 
                     case "couts":
                         <p class="text-secondary">
-                            Dépenses engagées au titre de ce contrat. Imputer un coût sur un budget est ce qui
-                            remplit ce budget.
+                            @T("Dépenses engagées au titre de ce contrat. Imputer un coût sur un budget est ce qui remplit ce budget.")
                         </p>
 
                         <div class="card mb-3">
                             <div class="card-body">
                                 <div class="row g-2 align-items-end">
                                     <div class="col-md-3">
-                                        <label class="form-label">Intitulé</label>
+                                        <label class="form-label">@T("Intitulé")</label>
                                         <input class="form-control" @bind="_newCost.Name" @bind:event="oninput" />
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Début</label>
+                                        <label class="form-label">@T("Début")</label>
                                         <input class="form-control" type="date" @bind="_newCost.StartDate" />
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Fin</label>
+                                        <label class="form-label">@T("Fin")</label>
                                         <input class="form-control" type="date" @bind="_newCost.EndDate" />
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Montant</label>
+                                        <label class="form-label">@T("Montant")</label>
                                         <input class="form-control" type="number" step="0.01" @bind="_newCost.Amount" />
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label">Budget</label>
+                                        <label class="form-label">@T("Budget")</label>
                                         <select class="form-select" @bind="_newCostBudgetId">
                                             <option value="0">—</option>
                                             @foreach (Budget budget in _budgets)
@@ -260,7 +259,7 @@ else
                         {
                             <div class="glping-config-placeholder">
                                 <i class="ti ti-coin"></i>
-                                <p class="mb-0">Aucun coût enregistré.</p>
+                                <p class="mb-0">@T("Aucun coût enregistré.")</p>
                             </div>
                         }
                         else
@@ -269,10 +268,10 @@ else
                                 <table class="table table-vcenter">
                                     <thead>
                                         <tr>
-                                            <th>Intitulé</th>
-                                            <th>Période</th>
-                                            <th>Budget</th>
-                                            <th class="text-end">Montant</th>
+                                            <th>@T("Intitulé")</th>
+                                            <th>@T("Période")</th>
+                                            <th>@T("Budget")</th>
+                                            <th class="text-end">@T("Montant")</th>
                                             <th style="width: 3rem;"></th>
                                         </tr>
                                     </thead>
@@ -296,7 +295,7 @@ else
                                                 </td>
                                                 <td class="text-end">@Money.Format(cost.Amount)</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="Supprimer"
+                                                    <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Supprimer"))"
                                                             @onclick="() => DeleteCostAsync(cost.Id)">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
@@ -306,7 +305,7 @@ else
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="3" class="text-end">Total</th>
+                                            <th colspan="3" class="text-end">@T("Total")</th>
                                             <th class="text-end">@Money.Format(_costs.Sum(cost => cost.Amount))</th>
                                             <th></th>
                                         </tr>

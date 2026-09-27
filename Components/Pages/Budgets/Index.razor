@@ -1,7 +1,7 @@
 @page "/management/budgets"
 @rendermode InteractiveServer
 
-<PageTitle>Budgets — GlpiNg</PageTitle>
+<PageTitle>@T("Budgets — GlpiNg")</PageTitle>
 
 <div class="glping-list-page">
 <div class="card">
@@ -9,12 +9,12 @@
         <div class="btn-list">
             <div class="dropdown">
                 <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="ti ti-search me-1"></i>Rechercher
+                    <i class="ti ti-search me-1"></i>@T("Rechercher")
                 </button>
                 <div class="dropdown-menu p-3" style="min-width: 280px;">
                     <div class="input-icon">
                         <span class="input-icon-addon"><i class="ti ti-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Rechercher un budget..."
+                        <input type="text" class="form-control" placeholder="@(T("Rechercher un budget..."))"
                                @bind="_searchTerm" @bind:event="oninput" @onkeyup="OnSearchChanged" />
                     </div>
                 </div>
@@ -24,27 +24,26 @@
         <div class="btn-list align-items-center">
             <div class="dropdown">
                 <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
-                        disabled="@(_selectedIds.Count == 0)" title="Supprimer la sélection">
+                        disabled="@(_selectedIds.Count == 0)" title="@(T("Supprimer la sélection"))">
                     <i class="ti ti-trash"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
                     <p class="mb-2">
-                        Supprimer @_selectedIds.Count budget(s) ? Les coûts qui leur étaient imputés
-                        restent, sans budget. Cette action est définitive.
+                        @T("Supprimer {0} budget(s) ? Les coûts qui leur étaient imputés restent, sans budget. Cette action est définitive.", _selectedIds.Count)
                     </p>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-sm">Annuler</button>
-                        <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteSelectedAsync">Supprimer</button>
+                        <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                        <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteSelectedAsync">@T("Supprimer")</button>
                     </div>
                 </div>
             </div>
 
-            <button type="button" class="btn btn-icon" @onclick="LoadAsync" title="Rafraîchir">
+            <button type="button" class="btn btn-icon" @onclick="LoadAsync" title="@(T("Rafraîchir"))">
                 <i class="ti ti-refresh"></i>
             </button>
 
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newBudgetModal">
-                <i class="ti ti-plus me-1"></i>Ajouter
+                <i class="ti ti-plus me-1"></i>@T("Ajouter")
             </button>
         </div>
     </div>
@@ -54,23 +53,23 @@
             <thead>
                 <tr>
                     <th style="width: 2.5rem;">
-                        <input class="form-check-input m-0" type="checkbox" title="Sélectionner les éléments visibles"
+                        <input class="form-check-input m-0" type="checkbox" title="@(T("Sélectionner les éléments visibles"))"
                                checked="@AllSelected"
                                @onchange="@((ChangeEventArgs e) => ToggleSelectAll((bool)(e.Value ?? false)))" />
                     </th>
-                    <th>Nom</th>
-                    <th>Code</th>
-                    <th>Type</th>
-                    <th>Période</th>
-                    <th class="text-end">Montant alloué</th>
-                    <th class="text-end">Imputé</th>
-                    <th class="text-end">Reste</th>
+                    <th>@T("Nom")</th>
+                    <th>@T("Code")</th>
+                    <th>@T("Type")</th>
+                    <th>@T("Période")</th>
+                    <th class="text-end">@T("Montant alloué")</th>
+                    <th class="text-end">@T("Imputé")</th>
+                    <th class="text-end">@T("Reste")</th>
                 </tr>
             </thead>
             <tbody>
                 @if (_filtered.Count == 0)
                 {
-                    <tr><td colspan="8" class="text-center text-secondary py-4">Aucun budget.</td></tr>
+                    <tr><td colspan="8" class="text-center text-secondary py-4">@T("Aucun budget.")</td></tr>
                 }
                 else
                 {
@@ -114,39 +113,39 @@
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="ti ti-report-money me-2"></i>Nouvel élément - Budget</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                <h5 class="modal-title"><i class="ti ti-report-money me-2"></i>@T("Nouvel élément - Budget")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@(T("Fermer"))"></button>
             </div>
             <div class="modal-body">
                 <div class="glping-fiche-field">
-                    <label>Nom<span class="text-danger ms-1" title="Champ obligatoire">*</span></label>
+                    <label>@T("Nom")<span class="text-danger ms-1" title="@(T("Champ obligatoire"))">*</span></label>
                     <input class="form-control" @bind="_newBudget.Name" @bind:event="oninput" />
                 </div>
                 <div class="glping-fiche-field">
-                    <label>Code</label>
+                    <label>@T("Code")</label>
                     <input class="form-control" @bind="_newBudget.Code" />
                 </div>
                 <div class="glping-fiche-field">
-                    <label>Type</label>
-                    <input class="form-control" placeholder="Investissement, fonctionnement…" @bind="_newBudget.Type" />
+                    <label>@T("Type")</label>
+                    <input class="form-control" placeholder="@(T("Investissement, fonctionnement…"))" @bind="_newBudget.Type" />
                 </div>
                 <div class="glping-fiche-field">
-                    <label>Montant alloué</label>
+                    <label>@T("Montant alloué")</label>
                     <input class="form-control" type="number" step="0.01" @bind="_newBudget.Amount" />
                 </div>
                 <div class="glping-fiche-field">
-                    <label>Début</label>
+                    <label>@T("Début")</label>
                     <input class="form-control" type="date" @bind="_newBudget.StartDate" />
                 </div>
                 <div class="glping-fiche-field">
-                    <label>Fin</label>
+                    <label>@T("Fin")</label>
                     <input class="form-control" type="date" @bind="_newBudget.EndDate" />
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" disabled="@string.IsNullOrWhiteSpace(_newBudget.Name)"
                         @onclick="CreateAsync">
-                    <i class="ti ti-plus me-1"></i>Ajouter
+                    <i class="ti ti-plus me-1"></i>@T("Ajouter")
                 </button>
             </div>
         </div>
