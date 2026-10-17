@@ -23,8 +23,8 @@
       fournisseur ni le DbContext concret, qui restent la responsabilité de l'hôte — même montage
       que GlpiNg.Modules.Inventory.csproj.
     -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
     <!-- ToastService (confirmations/erreurs de formulaire), comme les pages des autres modules. -->
     <PackageReference Include="Blazor.Bootstrap" Version="4.0.0" />
   </ItemGroup>
