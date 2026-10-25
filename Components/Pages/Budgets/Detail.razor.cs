@@ -47,6 +47,8 @@ public partial class Detail : ComponentBase
         {
             yield return ("fiche", "Fiche", "ti-report-money", null);
             yield return ("couts", "Coûts imputés", "ti-coin", _costs.Count);
+            yield return ("baseconnaissances", "Base de connaissances", "ti-book", null);
+            yield return ("elements", "Éléments", "ti-device-desktop", null);
             yield return ("documents", "Documents", "ti-file", _documentCount);
             yield return ("notes", "Notes", "ti-notes", _noteCount);
             yield return ("historique", "Historique", "ti-history", _history.Count);

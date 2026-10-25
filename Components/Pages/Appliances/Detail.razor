@@ -122,6 +122,38 @@ else
                         </div>
                         break;
 
+                    case "contrats":
+                        <ItemContractsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" />
+                        break;
+
+                    case "gestion":
+                        <ItemManagementTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" />
+                        break;
+
+                    case "certificats":
+                        <ItemRelationsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Certificate" />
+                        break;
+
+                    case "domaines":
+                        <ItemRelationsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Domain" />
+                        break;
+
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
+                    case "projets":
+                        <ItemRelationsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Project" />
+                        break;
+
+                    case "impact":
+                        <ItemRelationsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Impact" />
+                        break;
+
+                    case "elements":
+                        <ItemAssetsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Appliance" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Appliance" ItemId="ApplianceId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

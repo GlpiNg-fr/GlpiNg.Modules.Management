@@ -143,6 +143,22 @@ else
                         </div>
                         break;
 
+                    case "gestion":
+                        <ItemManagementTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" />
+                        break;
+
+                    case "contrats":
+                        <ItemContractsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" />
+                        break;
+
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
+                    case "certificats":
+                        <ItemRelationsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Certificate" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

@@ -19,6 +19,12 @@ public static class ManagementModuleServiceCollectionExtensions
         // Contribution du module au menu latéral de l'hôte (groupe « Gestion »).
         services.AddSingleton<IMenuProvider, ManagementMenuProvider>();
 
+        // Contrats rattachés aux objets du parc (onglet « Contrats » des fiches).
+        services.AddScoped<GlpiNg.Modules.Abstractions.Items.IItemContracts, ItemContractsService>();
+
+        // Certificats, domaines, applicatifs et projets, cibles des onglets de rattachement.
+        services.AddScoped<GlpiNg.Modules.Abstractions.Items.IRelationTargetSource, GlpiNg.Modules.Management.RelationTargetSource>();
+
         return services;
     }
 }

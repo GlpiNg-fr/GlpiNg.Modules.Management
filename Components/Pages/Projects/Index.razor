@@ -1,0 +1,125 @@
+﻿@page "/management/projects"
+@rendermode InteractiveServer
+
+<PageTitle>@T("Projets — GlpiNg")</PageTitle>
+
+<div class="glping-list-page">
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between glping-list-toolbar">
+        <div class="btn-list">
+            <div class="dropdown">
+                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="ti ti-search me-1"></i>@T("Rechercher")
+                </button>
+                <div class="dropdown-menu p-3" style="min-width: 280px;">
+                    <div class="input-icon">
+                        <span class="input-icon-addon"><i class="ti ti-search"></i></span>
+                        <input type="text" class="form-control" placeholder="@(T("Rechercher..."))"
+                               @bind="_searchTerm" @bind:event="oninput" @onkeyup="OnSearchChanged" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-list align-items-center">
+            <div class="dropdown">
+                <button type="button" class="btn btn-icon text-danger" data-bs-toggle="dropdown" aria-expanded="false"
+                        disabled="@(_selectedIds.Count == 0)" title="@(T("Supprimer la sélection"))">
+                    <i class="ti ti-trash"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 260px;">
+                    <p class="mb-2">@T("Supprimer {0} élément(s) ? Cette action est définitive.", _selectedIds.Count)</p>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm">@T("Annuler")</button>
+                        <button type="button" class="btn btn-sm btn-danger" @onclick="DeleteSelectedAsync">@T("Supprimer")</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-icon" @onclick="LoadAsync" title="@(T("Rafraîchir"))">
+                <i class="ti ti-refresh"></i>
+            </button>
+
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+                <i class="ti ti-plus me-1"></i>@T("Ajouter")
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th style="width: 2.5rem;">
+                        <input class="form-check-input m-0" type="checkbox" title="@(T("Sélectionner les éléments visibles"))"
+                               checked="@AllSelected"
+                               @onchange="@((ChangeEventArgs e) => ToggleSelectAll((bool)(e.Value ?? false)))" />
+                    </th>
+                    <th>@T("Projet")</th>
+                    <th>@T("Code")</th>
+                    <th>@T("Statut")</th>
+                    <th>@T("Début prévu")</th>
+                    <th>@T("Fin prévue")</th>
+                    <th>@T("Avancement")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (_filtered.Count == 0)
+                {
+                    <tr><td colspan="7" class="text-center text-secondary py-4">@T("Aucun élément.")</td></tr>
+                }
+                else
+                {
+                    @foreach (Project item in _filtered)
+                    {
+                        <tr>
+                            <td>
+                                <input class="form-check-input m-0" type="checkbox" checked="@_selectedIds.Contains(item.Id)"
+                                       @onchange="@((ChangeEventArgs e) => ToggleSelect(item.Id, (bool)(e.Value ?? false)))" />
+                            </td>
+                                <td>
+                                    <a href="@($"/management/projects/{item.Id}")" class="text-reset fw-semibold">
+                                        <i class="ti ti-clipboard-list me-1 text-secondary"></i>@item.Name
+                                    </a>
+                                </td>
+                                <td class="text-secondary">@item.Code</td>
+                                <td class="text-secondary">@item.Status</td>
+                                <td class="text-secondary">@Display.LocalDate(item.PlannedStart)</td>
+                                <td class="text-secondary">@Display.LocalDate(item.PlannedEnd)</td>
+                                <td class="text-secondary">@item.Percent %</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="ti ti-clipboard-list me-2"></i>@T("Nouvel élément - Projet")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@(T("Fermer"))"></button>
+            </div>
+            <div class="modal-body">
+                <div class="glping-fiche-field">
+                    <label>@T("Projet")<span class="text-danger ms-1" title="@(T("Champ obligatoire"))">*</span></label>
+                    <input class="form-control" @bind="_newItem.Name" @bind:event="oninput" />
+                </div>
+                <div class="glping-fiche-field">
+                    <label>@T("Code")</label>
+                    <input class="form-control" @bind="_newItem.Code" />
+                </div>
+                <p class="hint">@T("Le reste se renseigne sur la fiche, une fois l'élément créé.")</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" disabled="@string.IsNullOrWhiteSpace(_newItem.Name)"
+                        @onclick="CreateAsync">
+                    <i class="ti ti-plus me-1"></i>@T("Ajouter")
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -123,6 +123,38 @@ else
                         </div>
                         break;
 
+                    case "impact":
+                        <ItemRelationsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Impact" />
+                        break;
+
+                    case "gestion":
+                        <ItemManagementTab ItemType="@ItemTypes.Domain" ItemId="DomainId" />
+                        break;
+
+                    case "tickets":
+                        <ItemRelationsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Ticket" />
+                        break;
+
+                    case "problemes":
+                        <ItemRelationsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Problem" />
+                        break;
+
+                    case "changements":
+                        <ItemRelationsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Change" />
+                        break;
+
+                    case "contrats":
+                        <ItemContractsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" />
+                        break;
+
+                    case "certificats":
+                        <ItemRelationsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Certificate" />
+                        break;
+
+                    case "elements":
+                        <ItemAssetsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Domain" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

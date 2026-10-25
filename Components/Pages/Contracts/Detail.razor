@@ -315,6 +315,18 @@ else
                         }
                         break;
 
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@ItemTypes.Contract" ItemId="ContractId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
+                    case "tickets":
+                        <ItemRelationsTab ItemType="@ItemTypes.Contract" ItemId="ContractId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Ticket" />
+                        break;
+
+                    case "elements":
+                        <LinkedItemsTab Kind="contract" Id="ContractId" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Contract" ItemId="ContractId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

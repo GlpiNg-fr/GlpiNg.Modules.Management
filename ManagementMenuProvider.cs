@@ -25,6 +25,7 @@ public sealed class ManagementMenuProvider : IMenuProvider
             new("Data centers", "/management/datacenters", "ti-building-warehouse"),
             new("Clusters", "/management/clusters", "ti-affiliate"),
             new("Domaines", "/management/domains", "ti-world-www"),
+            new("Projets", "/management/projects", "ti-clipboard-list"),
             new("Applicatifs", "/management/appliances", "ti-apps"),
             new("Bases de données", "/management/databases", "ti-database"),
         ]),

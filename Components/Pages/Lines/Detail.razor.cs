@@ -44,6 +44,8 @@ public partial class Detail : ComponentBase
         get
         {
             yield return ("fiche", "Fiche", "ti-phone-call", null);
+            yield return ("gestion", "Gestion", "ti-wallet", null);
+            yield return ("contrats", "Contrats", "ti-file-text", null);
             yield return ("documents", "Documents", "ti-file", _documentCount);
             yield return ("notes", "Notes", "ti-notes", _noteCount);
             yield return ("historique", "Historique", "ti-history", _history.Count);

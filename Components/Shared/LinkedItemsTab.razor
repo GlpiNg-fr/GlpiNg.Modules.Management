@@ -1,0 +1,53 @@
+@using GlpiNg.Modules.Abstractions.Items
+@inject IServiceProvider Services
+
+@* Onglet « Éléments » d'une fiche de gestion : les objets rattachés à un contrat, achetés auprès
+   d'un fournisseur ou imputés à un budget. Lecture seule : le rattachement se pose depuis la fiche
+   de l'objet (onglets « Contrats » et « Gestion »). *@
+
+@if (_items is null)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-link-off"></i>
+        <p class="mb-0">@T("Cette fonction n'est pas active sur cette installation.")</p>
+    </div>
+}
+else if (_items.Count == 0)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-link-off"></i>
+        <p class="mb-0">@T("Aucun élément rattaché.")</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead><tr><th>@T("Nom")</th></tr></thead>
+            <tbody>
+                @foreach (RelationTarget item in _items)
+                {
+                    <tr><td><a href="@item.Url" class="text-reset fw-semibold">@item.Name</a></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    /// <summary><c>contract</c>, <c>budget</c> ou <c>supplier</c>.</summary>
+    [Parameter, EditorRequired]
+    public required string Kind { get; set; }
+
+    [Parameter, EditorRequired]
+    public int Id { get; set; }
+
+    private IReadOnlyList<RelationTarget>? _items;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _items = Kind == "contract"
+            ? (Services.GetService(typeof(IItemContracts)) as IItemContracts) is { } contracts ? await contracts.GetItemsAsync(Id) : null
+            : (Services.GetService(typeof(IItemManagement)) as IItemManagement) is { } management ? await management.GetItemsAsync(Kind, Id) : null;
+    }
+}

@@ -180,6 +180,14 @@ else
                         }
                         break;
 
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@ItemTypes.Budget" ItemId="BudgetId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
+                    case "elements":
+                        <LinkedItemsTab Kind="budget" Id="BudgetId" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Budget" ItemId="BudgetId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

@@ -110,6 +110,34 @@ else
                         </div>
                         break;
 
+                    case "gestion":
+                        <ItemManagementTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" />
+                        break;
+
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
+                    case "tickets":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Ticket" />
+                        break;
+
+                    case "problemes":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Problem" />
+                        break;
+
+                    case "changements":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Change" />
+                        break;
+
+                    case "domaines":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Domain" />
+                        break;
+
+                    case "applicatifs":
+                        <ItemRelationsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Appliance" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.DatabaseInstance" ItemId="DatabaseId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />
