@@ -159,6 +159,10 @@ else
                         <ItemRelationsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Certificate" />
                         break;
 
+                    case "elements":
+                        <ItemAssetsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.License" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.SoftwareLicense" ItemId="LicenseId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

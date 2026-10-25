@@ -1,0 +1,87 @@
+@using GlpiNg.Modules.Abstractions.Directory
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DbContext> DbFactory
+@inject IServiceProvider Services
+
+@* Équipe d'un projet. Les utilisateurs viennent du répertoire de l'hôte (IPrincipalDirectory), seul à connaître les comptes. *@
+
+<div class="d-flex gap-2 mb-3">
+    <select class="form-select" style="max-width: 320px;" @bind="_selected">
+        <option value="0">@T("Ajouter un membre…")</option>
+        @foreach (PrincipalOption user in _users.Where(u => !_members.Any(m => m.UserId == u.Id)))
+        {
+            <option value="@user.Id">@Label(user)</option>
+        }
+    </select>
+    <button type="button" class="btn btn-primary" disabled="@(_selected == 0)" @onclick="AddAsync"><i class="ti ti-plus me-1"></i>@T("Ajouter")</button>
+</div>
+
+@if (_members.Count == 0)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-users"></i>
+        <p class="mb-0">@T("Aucun membre.")</p>
+    </div>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (ProjectMember member in _members)
+        {
+            <li class="list-group-item d-flex align-items-center justify-content-between">
+                <span><i class="ti ti-user me-2"></i>@member.UserName</span>
+                <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Retirer"))" @onclick="() => RemoveAsync(member.Id)"><i class="ti ti-x"></i></button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public int ProjectId { get; set; }
+
+    private List<ProjectMember> _members = [];
+    private List<PrincipalOption> _users = [];
+    private int _selected;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Services.GetService(typeof(IPrincipalDirectory)) is IPrincipalDirectory directory)
+        {
+            _users = [.. await directory.GetAsync(PrincipalKind.User)];
+        }
+
+        await LoadAsync();
+    }
+
+    /// <summary>Un compte sans nom affiché (ni prénom ni nom) reste désignable : on retombe sur son identifiant.</summary>
+    private static string Label(PrincipalOption user) => string.IsNullOrWhiteSpace(user.Name) ? $"#{user.Id}" : user.Name;
+
+    private async Task LoadAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        _members = await db.Set<ProjectMember>().AsNoTracking().Where(m => m.ProjectId == ProjectId).OrderBy(m => m.UserName).ToListAsync();
+        _selected = 0;
+    }
+
+    private async Task AddAsync()
+    {
+        PrincipalOption? user = _users.FirstOrDefault(u => u.Id == _selected);
+        if (user is null)
+        {
+            return;
+        }
+
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        db.Set<ProjectMember>().Add(new ProjectMember { ProjectId = ProjectId, UserId = user.Id, UserName = Label(user) });
+        await db.SaveChangesAsync();
+        await LoadAsync();
+    }
+
+    private async Task RemoveAsync(int id)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<ProjectMember>().Where(m => m.Id == id).ExecuteDeleteAsync();
+        await LoadAsync();
+    }
+}

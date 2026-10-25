@@ -94,6 +94,34 @@ else
                         </div>
                         break;
 
+                    case "taches":
+                        <ProjectTasksTab ProjectId="ProjectId" />
+                        break;
+
+                    case "equipe":
+                        <ProjectTeamTab ProjectId="ProjectId" />
+                        break;
+
+                    case "kanban":
+                        <ProjectKanbanTab ProjectId="ProjectId" />
+                        break;
+
+                    case "couts":
+                        <ItemCostsTab ItemType="@GlpiNg.Modules.Abstractions.Items.ItemTypes.Project" ItemId="ProjectId" />
+                        break;
+
+                    case "elements":
+                        <ItemAssetsTab ItemType="@GlpiNg.Modules.Abstractions.Items.ItemTypes.Project" ItemId="ProjectId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Project" />
+                        break;
+
+                    case "contrats":
+                        <ItemContractsTab ItemType="@GlpiNg.Modules.Abstractions.Items.ItemTypes.Project" ItemId="ProjectId" />
+                        break;
+
+                    case "baseconnaissances":
+                        <ItemRelationsTab ItemType="@GlpiNg.Modules.Abstractions.Items.ItemTypes.Project" ItemId="ProjectId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Knowledge" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Project" ItemId="ProjectId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

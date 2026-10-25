@@ -1,0 +1,80 @@
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DbContext> DbFactory
+
+@* Onglet « Salles serveurs » d'un data center. *@
+
+<div class="row g-2 mb-3 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label">@T("Nom")</label>
+        <input class="form-control" @bind="_name" @bind:event="oninput" />
+    </div>
+    <div class="col-md-7">
+        <label class="form-label">@T("Commentaire")</label>
+        <input class="form-control" @bind="_comment" />
+    </div>
+    <div class="col-md-1">
+        <button type="button" class="btn btn-primary" disabled="@string.IsNullOrWhiteSpace(_name)" @onclick="AddAsync"><i class="ti ti-plus"></i></button>
+    </div>
+</div>
+
+@if (_rooms.Count == 0)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-building"></i>
+        <p class="mb-0">@T("Aucune salle.")</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead><tr><th>@T("Nom")</th><th>@T("Commentaire")</th><th></th></tr></thead>
+            <tbody>
+                @foreach (ServerRoom room in _rooms)
+                {
+                    <tr>
+                        <td class="fw-semibold">@room.Name</td>
+                        <td class="text-secondary">@room.Comment</td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Supprimer"))" @onclick="() => DeleteAsync(room.Id)"><i class="ti ti-trash"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public int DatacenterId { get; set; }
+
+    private List<ServerRoom> _rooms = [];
+    private string _name = string.Empty;
+    private string? _comment;
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        _rooms = await db.Set<ServerRoom>().AsNoTracking().Where(r => r.DatacenterId == DatacenterId).OrderBy(r => r.Name).ToListAsync();
+    }
+
+    private async Task AddAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        db.Set<ServerRoom>().Add(new ServerRoom { DatacenterId = DatacenterId, Name = _name.Trim(), Comment = _comment });
+        await db.SaveChangesAsync();
+        _name = string.Empty;
+        _comment = null;
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<ServerRoom>().Where(r => r.Id == id).ExecuteDeleteAsync();
+        await LoadAsync();
+    }
+}

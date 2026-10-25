@@ -155,6 +155,10 @@ else
                         <ItemAssetsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Domain" />
                         break;
 
+                    case "enregistrements":
+                        <DomainRecordsTab DomainId="DomainId" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Domain" ItemId="DomainId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

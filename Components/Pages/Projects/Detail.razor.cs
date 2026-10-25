@@ -40,6 +40,13 @@ public partial class Detail : ComponentBase
         get
         {
             yield return ("fiche", "Fiche", "ti-clipboard-list", null);
+            yield return ("taches", "Tâches de projet", "ti-checklist", null);
+            yield return ("equipe", "Équipe", "ti-users", null);
+            yield return ("kanban", "Kanban", "ti-layout-kanban", null);
+            yield return ("couts", "Coûts", "ti-coin", null);
+            yield return ("elements", "Éléments", "ti-device-desktop", null);
+            yield return ("contrats", "Contrats", "ti-file-text", null);
+            yield return ("baseconnaissances", "Base de connaissances", "ti-book", null);
             yield return ("documents", "Documents", "ti-file", _documentCount);
             yield return ("notes", "Notes", "ti-notes", _noteCount);
             yield return ("historique", "Historique", "ti-history", _history.Count);

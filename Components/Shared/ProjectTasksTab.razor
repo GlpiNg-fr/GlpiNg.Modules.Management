@@ -1,0 +1,116 @@
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DbContext> DbFactory
+
+@* Onglet « Tâches de projet » : liste, ajout, changement de statut. Dates saisies : valeurs murales. *@
+
+<div class="row g-2 mb-3 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label">@T("Tâche")</label>
+        <input class="form-control" @bind="_name" @bind:event="oninput" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">@T("Début")</label>
+        <input type="date" class="form-control" @bind="_start" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">@T("Fin")</label>
+        <input type="date" class="form-control" @bind="_end" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">@T("Statut")</label>
+        <select class="form-select" @bind="_status">
+            @foreach (string status in ProjectTaskStatuses.All)
+            {
+                <option value="@status">@T(status)</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-1">
+        <button type="button" class="btn btn-primary" disabled="@string.IsNullOrWhiteSpace(_name)" @onclick="AddAsync">
+            <i class="ti ti-plus"></i>
+        </button>
+    </div>
+</div>
+
+@if (_tasks.Count == 0)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-checklist"></i>
+        <p class="mb-0">@T("Aucune tâche.")</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead><tr><th>@T("Tâche")</th><th>@T("Début")</th><th>@T("Fin")</th><th>@T("Statut")</th><th></th></tr></thead>
+            <tbody>
+                @foreach (ProjectTask task in _tasks)
+                {
+                    <tr>
+                        <td class="fw-semibold">@task.Name</td>
+                        <td class="text-secondary">@(task.PlannedStart is { } s ? Display.LocalDate(s) : "—")</td>
+                        <td class="text-secondary">@(task.PlannedEnd is { } e ? Display.LocalDate(e) : "—")</td>
+                        <td>
+                            <select class="form-select form-select-sm" value="@task.Status"
+                                    @onchange="@(async (ChangeEventArgs a) => await SetStatusAsync(task.Id, a.Value?.ToString() ?? task.Status))">
+                                @foreach (string status in ProjectTaskStatuses.All)
+                                {
+                                    <option value="@status">@T(status)</option>
+                                }
+                            </select>
+                        </td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Supprimer"))" @onclick="() => DeleteAsync(task.Id)">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public int ProjectId { get; set; }
+
+    private List<ProjectTask> _tasks = [];
+    private string _name = string.Empty;
+    private string _status = ProjectTaskStatuses.All[0];
+    private DateTime? _start;
+    private DateTime? _end;
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        _tasks = await db.Set<ProjectTask>().AsNoTracking().Where(t => t.ProjectId == ProjectId).OrderBy(t => t.PlannedStart).ThenBy(t => t.Id).ToListAsync();
+    }
+
+    private async Task AddAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        db.Set<ProjectTask>().Add(new ProjectTask { ProjectId = ProjectId, Name = _name.Trim(), Status = _status, PlannedStart = _start, PlannedEnd = _end });
+        await db.SaveChangesAsync();
+        _name = string.Empty;
+        _start = _end = null;
+        await LoadAsync();
+    }
+
+    private async Task SetStatusAsync(int id, string status)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<ProjectTask>().Where(t => t.Id == id).ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, status));
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<ProjectTask>().Where(t => t.Id == id).ExecuteDeleteAsync();
+        await LoadAsync();
+    }
+}

@@ -47,6 +47,7 @@ public partial class Detail : ComponentBase
             yield return ("changements", "Changements", "ti-replace", null);
             yield return ("domaines", "Domaines", "ti-world-www", null);
             yield return ("applicatifs", "Applicatifs", "ti-apps", null);
+            yield return ("elements", "Éléments", "ti-device-desktop", null);
             yield return ("documents", "Documents", "ti-file", _documentCount);
             yield return ("notes", "Notes", "ti-notes", _noteCount);
             yield return ("historique", "Historique", "ti-history", _history.Count);

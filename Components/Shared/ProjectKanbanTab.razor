@@ -1,0 +1,56 @@
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DbContext> DbFactory
+
+@* Kanban d'un projet : une colonne par statut de tâche ; les flèches déplacent la carte d'une colonne. *@
+
+<div class="row g-3">
+    @for (int index = 0; index < ProjectTaskStatuses.All.Count; index++)
+    {
+        int column = index;
+        string status = ProjectTaskStatuses.All[column];
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header"><h4 class="card-title">@T(status) <span class="badge ms-2">@_tasks.Count(t => t.Status == status)</span></h4></div>
+                <div class="card-body d-flex flex-column gap-2">
+                    @foreach (ProjectTask task in _tasks.Where(t => t.Status == status))
+                    {
+                        int id = task.Id;
+                        <div class="card card-sm">
+                            <div class="card-body d-flex align-items-center justify-content-between">
+                                <span>@task.Name</span>
+                                <span class="text-nowrap">
+                                    <button type="button" class="btn btn-icon btn-sm" disabled="@(column == 0)" title="@(T("Colonne précédente"))"
+                                            @onclick="() => MoveAsync(id, ProjectTaskStatuses.All[column - 1])"><i class="ti ti-chevron-left"></i></button>
+                                    <button type="button" class="btn btn-icon btn-sm" disabled="@(column == ProjectTaskStatuses.All.Count - 1)" title="@(T("Colonne suivante"))"
+                                            @onclick="() => MoveAsync(id, ProjectTaskStatuses.All[column + 1])"><i class="ti ti-chevron-right"></i></button>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public int ProjectId { get; set; }
+
+    private List<ProjectTask> _tasks = [];
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        _tasks = await db.Set<ProjectTask>().AsNoTracking().Where(t => t.ProjectId == ProjectId).OrderBy(t => t.Id).ToListAsync();
+    }
+
+    private async Task MoveAsync(int id, string status)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<ProjectTask>().Where(t => t.Id == id).ExecuteUpdateAsync(s => s.SetProperty(t => t.Status, status));
+        await LoadAsync();
+    }
+}

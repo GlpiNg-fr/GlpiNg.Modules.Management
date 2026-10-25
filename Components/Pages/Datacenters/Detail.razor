@@ -122,6 +122,10 @@ else
                         <ItemRelationsTab ItemType="@ItemTypes.Datacenter" ItemId="DatacenterId" Relation="@GlpiNg.Modules.Abstractions.Items.ItemRelationKinds.Impact" />
                         break;
 
+                    case "salles":
+                        <ServerRoomsTab DatacenterId="DatacenterId" />
+                        break;
+
                     case "documents":
                         <ItemDocumentsTab ItemType="@ItemTypes.Datacenter" ItemId="DatacenterId" AuthorName="@_currentUserName"
                                           CountChanged="count => _documentCount = count" />

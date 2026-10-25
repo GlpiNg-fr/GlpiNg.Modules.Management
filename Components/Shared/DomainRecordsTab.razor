@@ -1,0 +1,100 @@
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<DbContext> DbFactory
+
+@* Onglet « Enregistrements » d'un domaine : les lignes de sa zone DNS. *@
+
+<div class="row g-2 mb-3 align-items-end">
+    <div class="col-md-3">
+        <label class="form-label">@T("Nom")</label>
+        <input class="form-control" @bind="_name" @bind:event="oninput" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">@T("Type")</label>
+        <select class="form-select" @bind="_type">
+            @foreach (string type in Types)
+            {
+                <option value="@type">@type</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">@T("Valeur")</label>
+        <input class="form-control" @bind="_target" />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">TTL</label>
+        <input type="number" min="0" class="form-control" @bind="_ttl" />
+    </div>
+    <div class="col-md-1">
+        <button type="button" class="btn btn-primary" disabled="@string.IsNullOrWhiteSpace(_name)" @onclick="AddAsync"><i class="ti ti-plus"></i></button>
+    </div>
+</div>
+
+@if (_records.Count == 0)
+{
+    <div class="glping-config-placeholder">
+        <i class="ti ti-list-details"></i>
+        <p class="mb-0">@T("Aucun enregistrement.")</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead><tr><th>@T("Nom")</th><th>@T("Type")</th><th>@T("Valeur")</th><th>TTL</th><th></th></tr></thead>
+            <tbody>
+                @foreach (DomainRecord record in _records)
+                {
+                    <tr>
+                        <td class="fw-semibold">@record.Name</td>
+                        <td><span class="badge">@record.Type</span></td>
+                        <td class="text-secondary" style="word-break: break-all;">@record.Target</td>
+                        <td class="text-secondary">@record.Ttl</td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-icon btn-sm text-danger" title="@(T("Supprimer"))" @onclick="() => DeleteAsync(record.Id)"><i class="ti ti-trash"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private static readonly string[] Types = ["A", "AAAA", "CNAME", "MX", "TXT", "NS", "SRV", "PTR", "CAA"];
+
+    [Parameter, EditorRequired]
+    public int DomainId { get; set; }
+
+    private List<DomainRecord> _records = [];
+    private string _name = string.Empty;
+    private string _type = "A";
+    private string? _target;
+    private int? _ttl;
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        _records = await db.Set<DomainRecord>().AsNoTracking().Where(r => r.DomainId == DomainId).OrderBy(r => r.Name).ThenBy(r => r.Type).ToListAsync();
+    }
+
+    private async Task AddAsync()
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        db.Set<DomainRecord>().Add(new DomainRecord { DomainId = DomainId, Name = _name.Trim(), Type = _type, Target = _target, Ttl = _ttl });
+        await db.SaveChangesAsync();
+        _name = string.Empty;
+        _target = null;
+        _ttl = null;
+        await LoadAsync();
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        await using DbContext db = await DbFactory.CreateDbContextAsync();
+        await db.Set<DomainRecord>().Where(r => r.Id == id).ExecuteDeleteAsync();
+        await LoadAsync();
+    }
+}

@@ -48,6 +48,7 @@ public partial class Detail : ComponentBase
             yield return ("contrats", "Contrats", "ti-file-text", null);
             yield return ("baseconnaissances", "Base de connaissances", "ti-book", null);
             yield return ("certificats", "Certificats", "ti-certificate", null);
+            yield return ("elements", "Éléments affectés", "ti-device-desktop", null);
             yield return ("documents", "Documents", "ti-file", _documentCount);
             yield return ("notes", "Notes", "ti-notes", _noteCount);
             yield return ("historique", "Historique", "ti-history", _history.Count);

@@ -10,7 +10,7 @@ public sealed class RelationTargetSource(IDbContextFactory<DbContext> dbFactory)
 {
     public IReadOnlyCollection<string> SupportedTypes { get; } =
         [Types.Certificate, Types.Domain,
-         Types.Appliance, Types.Project, Types.Cluster, Types.Datacenter, Types.DatabaseInstance];
+         Types.Appliance, Types.Project, Types.Cluster, Types.Datacenter, Types.DatabaseInstance, Types.PhoneLine, Types.SoftwareLicense];
 
     public async Task<IReadOnlyList<RelationTarget>> SearchAsync(string itemType, string? term, int limit, CancellationToken cancellationToken = default)
     {
@@ -32,6 +32,10 @@ public sealed class RelationTargetSource(IDbContextFactory<DbContext> dbFactory)
             Types.Datacenter => Map(itemType, "datacenters", await db.Set<Datacenter>().AsNoTracking()
                 .Where(x => x.Name.Contains(like)).OrderBy(x => x.Name).Take(limit).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
             Types.DatabaseInstance => Map(itemType, "databases", await db.Set<DatabaseInstance>().AsNoTracking()
+                .Where(x => x.Name.Contains(like)).OrderBy(x => x.Name).Take(limit).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
+            Types.PhoneLine => Map(itemType, "lines", await db.Set<PhoneLine>().AsNoTracking()
+                .Where(x => x.Name.Contains(like)).OrderBy(x => x.Name).Take(limit).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
+            Types.SoftwareLicense => Map(itemType, "licenses", await db.Set<SoftwareLicense>().AsNoTracking()
                 .Where(x => x.Name.Contains(like)).OrderBy(x => x.Name).Take(limit).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
             _ => [],
         };
@@ -56,6 +60,10 @@ public sealed class RelationTargetSource(IDbContextFactory<DbContext> dbFactory)
             Types.Datacenter => Map(itemType, "datacenters", await db.Set<Datacenter>().AsNoTracking()
                 .Where(x => ids.Contains(x.Id)).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
             Types.DatabaseInstance => Map(itemType, "databases", await db.Set<DatabaseInstance>().AsNoTracking()
+                .Where(x => ids.Contains(x.Id)).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
+            Types.PhoneLine => Map(itemType, "lines", await db.Set<PhoneLine>().AsNoTracking()
+                .Where(x => ids.Contains(x.Id)).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
+            Types.SoftwareLicense => Map(itemType, "licenses", await db.Set<SoftwareLicense>().AsNoTracking()
                 .Where(x => ids.Contains(x.Id)).Select(x => new Row(x.Id, x.Name)).ToListAsync(cancellationToken)),
             _ => [],
         };
